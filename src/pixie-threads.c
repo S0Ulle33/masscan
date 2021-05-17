@@ -12,7 +12,7 @@
 #include <errno.h>
 #endif
 
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -74,7 +74,7 @@ pixie_cpu_set_affinity(unsigned processor)
     if (result == 0) {
         fprintf(stderr, "set_affinity: returned error win32:%u\n", (unsigned)GetLastError());
     }
-#elif defined(__linux__) && defined(__GNUC__)
+#elif defined(__linux__) && defined(__GNUC__) && !defined(__TERMUX__)
     int x;
     pthread_t thread = pthread_self();
     cpu_set_t cpuset;
@@ -87,7 +87,7 @@ pixie_cpu_set_affinity(unsigned processor)
     if (x != 0) {
         fprintf(stderr, "set_affinity: returned error linux:%d\n", errno);
     }
-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
     /* FIXME: add code here */
     UNUSEDPARM(x);
 #endif
@@ -125,7 +125,7 @@ pixie_cpu_get_count(void)
         return 1;
     else
         return count;
-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
     /* BSD - use sysctl() function */
         int x;
         int mib[2];
